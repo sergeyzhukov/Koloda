@@ -62,6 +62,7 @@ public protocol KolodaViewDelegate:class {
   
   func koloda(koloda: KolodaView, didSwipedCardAtIndex index: UInt, inDirection direction: SwipeResultDirection)
   func koloda(kolodaDidRunOutOfCards koloda: KolodaView)
+  func koloda(koloda: KolodaView, willSwipeCardToIndex index: UInt)
   func koloda(koloda: KolodaView, didSelectCardAtIndex index: UInt)
   func koloda(kolodaShouldApplyAppearAnimation koloda: KolodaView) -> Bool
   func koloda(kolodaShouldMoveBackgroundCard koloda: KolodaView) -> Bool
@@ -77,6 +78,7 @@ public extension KolodaViewDelegate {
   
   func koloda(koloda: KolodaView, didSwipedCardAtIndex index: UInt, inDirection direction: SwipeResultDirection) {}
   func koloda(kolodaDidRunOutOfCards koloda: KolodaView) {}
+  func koloda(koloda: KolodaView, willSwipeCardToIndex index: UInt) {}
   func koloda(koloda: KolodaView, didSelectCardAtIndex index: UInt) {}
   func koloda(kolodaShouldApplyAppearAnimation koloda: KolodaView) -> Bool {return true}
   func koloda(kolodaShouldMoveBackgroundCard koloda: KolodaView) -> Bool {return true}
@@ -434,7 +436,7 @@ public class KolodaView: UIView, DraggableCardDelegate {
 
     
     if !visibleCards.isEmpty {
-      
+      self.delegate?.koloda(self, willSwipeCardToIndex: UInt(self.currentCardNumber))
       let topCardFrame = frameForCardAtIndex(0)
       for (index, currentCard) in visibleCards.enumerate() {
         currentCard.removeAnimations()
