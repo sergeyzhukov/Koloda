@@ -419,6 +419,7 @@ public class KolodaView: UIView, DraggableCardDelegate {
       lastCardFrame.size = topCardFrame.size
       lastCardView.frame = lastCardFrame
       lastCardView.hidden = true
+      lastCardView.alpha = 0.0
       lastCardView.userInteractionEnabled = true
 
       lastCardView.configure(lastCardContentView, overlayView: lastCardOverlayView)
@@ -435,13 +436,20 @@ public class KolodaView: UIView, DraggableCardDelegate {
 
 
     
-    if !visibleCards.isEmpty {
+    if !visibleCards.isEmpty {      
       self.delegate?.koloda(self, willSwipeCardToIndex: UInt(self.currentCardNumber))
       let topCardFrame = frameForCardAtIndex(0)
-      for (index, currentCard) in visibleCards.enumerate() {
-        currentCard.removeAnimations()
-        
+      for (index, currentCard) in visibleCards.enumerate() {        
+        currentCard.removeAnimations()        
         var currentCardFrame = frameForCardAtIndex(UInt(index))
+        
+        if currentCard.hidden == true {
+          currentCard.hidden = false
+          let lastCardAlphaAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+          lastCardAlphaAnimation.toValue = 1.0
+          lastCardAlphaAnimation.duration = backgroundCardFrameAnimationDuration
+          currentCard.pop_addAnimation(lastCardAlphaAnimation, forKey: "alpha")
+        }
         
         let widthScale = currentCardFrame.width / topCardFrame.width
         let heightScale = currentCardFrame.height / topCardFrame.height
@@ -467,8 +475,9 @@ public class KolodaView: UIView, DraggableCardDelegate {
             currentCard.alpha = alphaValueSemiTransparent
           }
         } else {
+
           frameAnimation.completionBlock = {(animation, finished) in
-            self.visibleCards.last?.hidden = false
+            
             self.animating = false
             
             self.delegate?.koloda(self, didSwipedCardAtIndex: UInt(self.currentCardNumber - 1), inDirection: direction)
