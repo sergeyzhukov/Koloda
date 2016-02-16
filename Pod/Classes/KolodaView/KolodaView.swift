@@ -103,7 +103,7 @@ public class KolodaView: UIView, DraggableCardDelegate {
   private(set) public var countOfCards = 0
   
   public var countOfVisibleCards = defaultCountOfVisibleCards
-  private var visibleCards = [DraggableCardView]()
+  public var visibleCards = [DraggableCardView]()
   private var animating = false
   
   public var alphaValueOpaque: CGFloat = defaultAlphaValueOpaque
